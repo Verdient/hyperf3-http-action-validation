@@ -16,11 +16,11 @@ use Override;
 class Min extends AbstractRuleAnnotation
 {
     /**
-     * @param int $value 最小值
+     * @param int|string $value 最小值
      *
      * @author Verdient。
      */
-    public function __construct(protected int $value) {}
+    public function __construct(protected int|string $value) {}
 
     /**
      * @author Verdient。
