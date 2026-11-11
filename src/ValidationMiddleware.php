@@ -30,6 +30,7 @@ use Verdient\Hyperf3\HttpAction\ActionInterface;
 use Verdient\Hyperf3\HttpAction\AttributeManager;
 use Verdient\Hyperf3\HttpAction\CollectionInputParameterInterface;
 use Verdient\Hyperf3\HttpAction\CollectionTypeManager;
+use Verdient\Hyperf3\HttpAction\InputParameterInterface;
 use Verdient\Hyperf3\HttpAction\ObjectInputParameterInterface;
 use Verdient\Hyperf3\HttpAction\Validation\Annotation\InputParam\BodyParam;
 use Verdient\Hyperf3\HttpAction\Validation\Annotation\InputParam\ParamSourceInterface;
@@ -145,6 +146,7 @@ class ValidationMiddleware implements MiddlewareInterface
         if (
             $dispatched->status === Dispatcher::FOUND
             && is_array($dispatched->handler->callback)
+            && is_string($dispatched->handler->callback[0])
             && is_subclass_of($dispatched->handler->callback[0], ActionInterface::class)
         ) {
             return $dispatched->handler->callback[0];
@@ -729,7 +731,7 @@ class ValidationMiddleware implements MiddlewareInterface
 
         if (!empty($sources[BodyParam::class])) {
             $bodyParams = array_merge(
-                Arr::dot($this->normalizeInputData($request->getParsedBody())),
+                Arr::dot($this->normalizeInputData((array) $request->getParsedBody())),
                 Arr::dot($this->normalizeInputData($request->getUploadedFiles()))
             );
             $this->removeUnnecessaryParams($bodyParams, array_intersect($ruleKeys, $sources[BodyParam::class]));
